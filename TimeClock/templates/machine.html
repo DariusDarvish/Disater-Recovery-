@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+{% block title %}{% if user.username %}Machine Management{% else %} Please Login {% endif %}{% endblock %}
+
+{% block content %}
+{% if perms.auth.Admin %}
+<a class='text-dark' href='/timeclock/add/machine' style='width:100%;padding-top:-10px;text-align:right;'>Add New</a>
+
+
+<table style='width:100%;margin-top:-300px;'>
+    <tr class='bg-dark text-white' style='font-size:x-large'>
+        <th>Machine code</th>
+        <th class='bg-white'></th>
+        <th>Description</th>
+        <th class='bg-white'></th>
+        <th>Hourly Rent</th>
+        <th class='bg-white'></th>
+        <th>Max Hours per day</th>
+        <th class='bg-white'></th>
+        <th class='text-dark'>edit</th>
+        <th class='bg-white'></th>
+        <th class='text-dark'>delete</th>
+        <th class='bg-white'></th>
+    </tr>
+    {% for Machine in object_list %}
+    <tr><td class='bg-white'></td></tr>
+    <tr style='color:black;background:lightgray'>
+        <td class='py-2'>{{Machine.machineCode}}</td>
+        <td class='bg-white'></td>
+        <td>{{Machine.description}}</td>
+        <td class='bg-white'></td>
+        <td>${{Machine.hourlyRent}}/Hr.</td>
+        <td class='bg-white'></td>
+        <td>{{Machine.maxHoursPerDay}} Hr.</td>
+        <td class='bg-white'></td>
+        <td><a class='text-dark' href='/timeclock/edit/machine/{{Machine.id}}'>Edit</a></td>
+        <td class='bg-white'></td>
+        <td><form method="POST" action="{% url 'TimeClock:machineDelete' Machine.id %}">{% csrf_token %}<input style='background:none;border:0;' onclick="return confirm('Did you mean to delete {{Machine.machineCode}}?')" type="submit" value="Delete"/></form></td>
+    </tr>
+    
+    {% endfor %}
+
+
+</table>
+{% endif %}
+{% endblock %}

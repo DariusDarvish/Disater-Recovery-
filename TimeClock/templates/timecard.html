@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+{% block title %}{% if user.username %}Timesheet Approval{% else %} Please Login {% endif %}{% endblock %}
+
+{% block content %}
+{% if perms.auth.Contractor %}<a class='text-dark' href='/timeclock/add/timecard/' style='width:100%;padding-top:0px;text-align:right;'>Add New</a>{% endif %}
+{% if perms.auth.Contractor %}<table style='width:100%;margin-top:-300px'>{% elif perms.auth.Admin %} <table style='width:100%;margin-top:1000px'> {% endif %}
+    <tr class='bg-dark text-white' style='font-size:x-large'>
+        <th>Site Code</th>
+        <th class='bg-white'></th>
+        <th>Contractor Name</th>
+        <th class='bg-white'></th>
+        <th>Total Hrs</th>
+        <th class='bg-white'></th>
+        <th>Total Amount</th>
+        <th class='bg-white'></th>
+        <th class='text-dark'>Review</th>
+        <th class='bg-white'></th>
+    </tr>
+    {% for Timecard in object_list %}
+    <tr><td class='bg-white'></td></tr>
+    <tr style='color:black;background:lightgray'>
+        <td class='py-2'>{{Timecard.siteCode}}</td>
+        <td class='bg-white'></td>
+        <td>{{Timecard.contractorName}}</td>
+        <td class='bg-white'></td>
+        <td>{{Timecard.totalHours}} Hrs.</td>
+        <td class='bg-white'></td>
+        <td>${{Timecard.totalAmount}}.00</td>
+        <td class='bg-white'></td>
+        <td><a class='text-dark' href='/timeclock/edit/timecard/{{Timecard.id}}'>Review</a></td>
+    </tr>
+    
+    {% endfor %}
+
+
+</table>
+
+{% endblock %}

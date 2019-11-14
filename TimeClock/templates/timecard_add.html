@@ -1,0 +1,178 @@
+{% extends 'index.html' %}
+{% block title %} {% if user.username %} Timesheet Submission {% else %} Please Login {% endif %} {% endblock %}
+
+{% block javascript %} 
+<script type='text/javascript'>
+//generate the form to look just like the word document
+//create data values for hourly cost of machines and jobcodes
+//get data from form to populate timecard model
+//submit button in form submits into timecard model
+//OPTIONAL: auto generate total when you input code and hours
+var jobcount=1,machinecount=1;
+
+$('#jobcodeadd').on("click",function job (){
+        jobcount = jobcount + 1;
+        var job =`<label class=''>Labor Code : </label>
+        <select id = 'machineCode'>
+        {% for JobCode in JobCode %} 
+        <option value = {{JobCode.id}}> 
+        {{JobCode.jobCode}}  
+        </option> 
+        {% endfor %}
+        </select>
+        <label class='ml-5'>Hrs. Worked</label> 
+        <input style='width:50px' type='text' id='hoursWorkedJob${jobcount}'/>
+        <label class='ml-5'>Total: </label>
+        <input style='width:50px' type='text' id='totalCostJob${jobcount}'/>
+        <br>`
+        $('#jobcodediv').append(job);
+    });
+
+$('#machineadd').on("click",function mach (){
+    machinecount = machinecount + 1;
+    var mach =`<label class=''>Machine Code : </label>
+    <select id = 'machineCode'>
+    {% for Machine in object_list %} 
+    <option value ='{{Machine.id}}'>
+    {{Machine.machineCode}}</option>
+    {% endfor %}
+    </select>
+    <label class='ml-5'>Hrs. Worked</label>
+    <input style='width:50px' type='text' id='hoursWorkedMachine${machinecount}'/>
+    <label class='ml-5'>Total: </label>   
+    <input style='width:50px' type='text' id='totalCostMachine${machinecount}'/>
+    <br>`
+    $('#machinecodediv').append(mach);
+    });
+$(document).onload(function(){
+    $('document').on("click","#success",function success (){
+        var site = document.getElementById('SiteCode').value;
+        var contractor = document.getElementById('ContractorName').value;
+        //alert(machinecount);
+
+        //var hrtest = document.getElementById('machinecodediv').getElementById('hoursWorkedMachine2').value;
+        $(document).ready(function(){
+            for (var x = 1; x < machinecount;x++){
+            elem1 = document.getElementById(`hoursWorkedJob${x}`).value;    
+            hrs.push(elem1);
+            aler(elem1)
+            elem2 = document.getElementById(`totalCostJob${x}`).value;
+            cost.push(elem2)
+            }
+            for (var x = 1; x < jobcount;x++){
+            cost.push(document.getElementById(`totalCostMachine${x}`).value);
+            }
+            for(x in totalHrs){
+            totalHrs = totalHrs + x
+            }
+            for(x in totalCost){
+            totalCost = totalCost + x
+            }
+
+
+        })
+
+        $('#machinecodediv').append(site);
+        $('#machinecodediv').append(contractor);
+        $('#machinecodediv').append(totalHrs);
+        $('#machinecodediv').append(Cost);
+    });
+
+
+})
+
+
+function hrs(){
+
+};
+    
+    
+ //   });
+    
+</script>
+{% endblock %}
+{% block content %}
+
+{% if perms.auth.Contractor %}
+<!--<div class="formContainer" style='height:100%;'>
+<div class='row' id="timecardform"></div>
+<br><br>
+
+<div class = 'row' id="jobCode">
+                <p>
+                <label>Select list</label>
+                <select id = "myList">
+                  <option value = "1">one</option>
+                  <option value = "2">two</option>
+                  <option value = "3">three</option>
+                  <option value = "4">four</option>
+                </select>
+                </p>
+</div>
+</div>
+-->
+
+<div style='height:100%;'>
+    <div class="row container-fluid">
+        <label>Site Code :</label> <input class='ml-3' type='text' id='SiteCode'/>
+        <label class='ml-3'>Contractor Name :</label> <input class='ml-3' type='text' id='ContractorName'/>
+        <label class='ml-3'>Date :</label> <input class='ml-3' type='text' id='Date'/>
+    </div>
+    <div class="row mt-5 ml-1 container1" style='height:30%;border:1px solid lightgray;width:1000px'>
+        <div class="col-10">
+        <h3 class='text-dark pl-2 ' style='margin-top:-20px;margin-left:30px;background:lightgray;height:40px;width:30%'>Labor Entry</h3>
+               <div class='mt-4' style='width:100%;'>
+                    <label class='ml-5'>Labor Code : </label>
+                    <select id = "machineCode">
+                        {% for JobCode in JobCode %}
+                            <option value = "{{JobCode.id}}">
+                                
+                                {{JobCode.jobCode}}
+                            </option>
+                        {% endfor %}
+                        
+                    </select>
+                    
+                    <label class='ml-5'>Hrs. Worked</label>   <input style='width:50px' type='text' id="hoursWorkedJob1"/>
+                    <label class='ml-5'>Total: </label>   <input style='width:50px' type='text' id='totalCostJob1'/>
+                       
+                </div>
+                <div id='jobcodediv' class='ml-5'></div>
+                </div>
+                <div class="col-2">
+                <button class='ml-5 text-primary' id="jobcodeadd" style='margin-top:250px;background:none;border:none' href='' > Add New </button>   
+                </div>      
+    </div>
+
+    {% block local_content %} {% endblock %}
+    <!--<div class="row mt-5 ml-1 container1" style='height:30%;border:1px solid gray;width:1000px'>
+            <h3 class='text-dark pr-5 pl-2 ' style='margin-top:-20px;margin-left:30px;background:gray;height:15%'>Labor Entry</h3>
+                   <div class='float-left' style='width:100%;margin-top:-100px'>
+                        <label class='ml-5'>Labor Code : </label>
+                        <select id = "machineCode">
+                            {% for JobCode in object_list %}
+                                <option value = "{{Machine.id}}">
+                                    {{machineCode.value}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        
+                        <label class='ml-5'>Hrs. Worked</label>   <input style='width:50px' type='text' id='hoursWorked{{JobCode.id}}'/>
+                        <label class='ml-5'>Total: </label>   <input style='width:50px' type='text' id='totalCost{{JobCode.id}}'/>
+                        
+                    </div>
+    </div>-->
+
+
+<div class='float-right'><button onclick="location.reload();" class='bg-primary text-white px-5'>Clear</button> <button id="success" class='text-white px-5 bg-primary'>Submit</button> </div>
+
+
+</div>
+
+
+
+
+
+{% endif %}
+{% endblock %}
+
